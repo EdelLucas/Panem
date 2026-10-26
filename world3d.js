@@ -49,7 +49,7 @@
     world.add(terrainGroup,districtGroup,routeGroup,arenaGroup,labelGroup);scene.add(world);
     const pickables=[],labelObjects=[],materials={};let labelsOn=false,selectedId="capitol";
     const blockGeo=new THREE.BoxGeometry(BLOCK*.98,BLOCK,BLOCK*.98);
-    function mat(name){if(!materials[name])materials[name]=new THREE.MeshStandardMaterial({color:"#fff",roughness:.92,metalness:.02});return materials[name];}
+    function mat(name){if(!materials[name]){const color=typeof name==="string"&&name.charAt(0)==="#"?name:"#ffffff";materials[name]=new THREE.MeshStandardMaterial({color,roughness:.92,metalness:.02});}return materials[name];}
     function push(list,name,x,y,z,color,sx,sy,sz){(list[name]||(list[name]=[])).push({x,y,z,color,sx:sx||1,sy:sy||1,sz:sz||1});}
     function instances(group,list,geo){
       const dummy=new THREE.Object3D();
@@ -190,7 +190,7 @@
       const hit=hits.find(h=>h.object.userData.regionId||h.object.userData.arenaId);if(!hit)return;
       const data=hit.object.userData;
       if(data.arenaId){focus(data.arenaId);const n=document.querySelector('#regionMap [data-arena="'+data.arenaId+'"]');if(n)n.dispatchEvent(new MouseEvent("click",{bubbles:true}));return;}
-      if(data.regionId){const b=project&&project.buildings?project.buildings.find(x=>x.id===data.buildingId):null;hudTitle.textContent=(b?b.name:(regions.find(x=>x.id===data.regionId)||{}).name||"Region")+" · 3D-Ansicht";hudMeta.textContent="Angeklickt · Die Region ist in der Seitenleiste ausgewählt";selectRegion(data.regionId);}
+      if(data.regionId){const b=project&&project.buildings?project.buildings.find(x=>x.id===data.buildingId):null;selectRegion(data.regionId);hudTitle.textContent=(b?b.name:(regions.find(x=>x.id===data.regionId)||{}).name||"Region")+" · 3D-Ansicht";hudMeta.textContent=b?"Bauwerk ausgewählt · Region: "+((regions.find(x=>x.id===data.regionId)||{}).name||""):"Region ausgewählt · Die Seitenleiste zeigt den Projektstatus";}
     });
     document.addEventListener("click",onDocumentClick);
     document.getElementById("worldHome").addEventListener("click",()=>{controls.target.set(0,28,0);camera.position.set(860,850,940);controls.update();hudTitle.textContent="Panem · 3D-Voxel-Welt";hudMeta.textContent="Übersicht · Wähle ein Bauwerk oder einen Distrikt zum Heranzoomen";});
