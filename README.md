@@ -47,3 +47,10 @@ Die 13 Distrikte, Arenen und Verkehrsverbindungen sind als **Planungsentwürfe**
 ## Veröffentlichung mit GitHub Pages
 
 Ein Workflow unter `.github/workflows/pages.yml` veröffentlicht die statische App bei Änderungen an `main`. Einmalig in **Settings → Pages** als Build and deployment source **GitHub Actions** auswählen. Danach wird die Website nach erfolgreichen Workflow-Läufen aktualisiert. Du kannst den Workflow außerdem über **Actions → Deploy PanemCraft to GitHub Pages → Run workflow** manuell starten.
+
+
+## 3D-Voxel-Welt
+
+Die Kartenansicht startet mit einer dreh- und zoombaren 3D-Szene auf Basis von Three.js. Gelände wird prozedural aus blockigen Terrain-Säulen aufgebaut, ergänzt durch Wälder, einen Fluss, räumliche Gebäudemodelle, Arenen sowie Bahn- und Straßenrouten. Regionen und Bauwerke lassen sich anklicken; die schematische Karte bleibt über den Ansichtsumschalter verfügbar.
+
+Die 3D-Ansicht lädt Three.js und OrbitControls vom jsDelivr-CDN und benötigt Internetverbindung sowie WebGL im Browser. Es handelt sich um ein stilisiertes Voxel-Modell der Projektplanung, nicht um eine offizielle Panem-Karte oder einen Export einer echten Minecraft-Welt. Die Gebäude sind räumliche Voransichten und noch keine vollständigen Minecraft-Schematic-Dateien.
