@@ -44,6 +44,6 @@ python -m http.server 8000
 
 Die 13 Distrikte, Arenen und Verkehrsverbindungen sind als **Planungsentwürfe** angelegt. Ein genauer Block-für-Block-Plan benötigt pro Bauwerk Grundrissraster, Höhenebenen, Blocklisten und Prüfschritte; das ist nicht für jedes Bauwerk bereits enthalten. Es gibt aktuell keine Cloud-Synchronisierung, Benutzerkonten, serverseitige Datenbank oder Live-Multiplayer-Funktionen.
 
-## GitHub Pages
+## Veröffentlichung mit GitHub Pages
 
-Das Repository kann über **Settings → Pages** als statische Website veröffentlicht werden: wähle die Branch `main` und den Root-Ordner. Keine Build-Action notwendig.
+Ein Workflow unter `.github/workflows/pages.yml` veröffentlicht die statische App bei Änderungen an `main`. Einmalig in **Settings → Pages** als Build and deployment source **GitHub Actions** auswählen. Danach wird die Website nach erfolgreichen Workflow-Läufen aktualisiert. Du kannst den Workflow außerdem über **Actions → Deploy PanemCraft to GitHub Pages → Run workflow** manuell starten.
