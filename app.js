@@ -57,7 +57,7 @@
   function persist(show=true){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(project));if(show)toast("Projekt im Browser gespeichert.");}catch(e){toast("Speichern nicht möglich – bitte exportieren.");}}
   function toast(message){const node=$("toast");node.textContent=message;node.classList.add("show");clearTimeout(toast.timer);toast.timer=setTimeout(()=>node.classList.remove("show"),2600);}
   function regionById(id){return REGIONS.find(r=>r.id===id)||REGIONS[0];}
-  function statusOfRegion(id){if(id==="capitol"){const items=project.buildings.filter(b=>b.region===id);return items.length&&items.every(b=>b.status==="done")?"done":items.some(b=>b.status==="building")?"building":"planned";}return project.districts[id]?.status||"planned";}
+  function statusOfRegion(id){const items=project.buildings.filter(b=>b.region===id);if(items.length&&items.every(b=>b.status==="done"))return "done";if(items.some(b=>b.status==="building"))return "building";return project.districts[id]?.status||"planned";}
   const STATUS={planned:"Geplant",building:"Im Bau",done:"Fertig"};
   function fmt(n){return Math.round(Number(n)||0).toLocaleString("de-DE");}
   function distance(a,b){const ca=project.coordinates[a]||regionById(a),cb=project.coordinates[b]||regionById(b);return Math.round(Math.hypot((Number(ca.x)||0)-(Number(cb.x)||0),(Number(ca.z)||0)-(Number(cb.z)||0)));}
