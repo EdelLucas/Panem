@@ -1,56 +1,49 @@
-# PanemCraft
+# PanemCraft – Panem aus Blöcken
 
-PanemCraft ist ein deutschsprachiger, responsiver Planungs-Leitstand für ein großes **Panem-Bauprojekt in Minecraft Java Survival**.
+PanemCraft ist eine **begehbare 3D-Blockwelt von ganz Panem** im Minecraft-Stil, die direkt im Browser läuft – ohne Installation, ohne Build-Schritt.
 
-> Fan-made Planungsprojekt, nicht offiziell mit „Die Tribute von Panem“ verbunden. Die Karte ist schematisch; Koordinaten sind frei konfigurierbare Projektkoordinaten. Die Bauwerk- und Materialmengen sind Schätzungen, keine verifizierten Block-für-Block-Schemata.
+> Inoffizielles Fan-Projekt. Nicht verbunden mit Suzanne Collins, Lionsgate, Mojang oder Microsoft. Es werden **keine Original-Minecraft-Texturen** verwendet: Alle Blockgrafiken werden beim Laden prozedural erzeugt.
+
+## Was ist enthalten?
+
+- **Ganz Panem als eine Welt:** 768 × 416 Blöcke Grundfläche, bis zu 128 Blöcke hoch, rund 9 Millionen Blöcke. Die Geografie folgt der verbreiteten Fan-Karte auf Basis Nordamerikas nach dem Anstieg des Meeresspiegels: Rocky Mountains, Kaskaden, Appalachen, Große Seen, Mississippi, Colorado River, Küsten, Wüsten, Prärien und Wälder.
+- **Das Kapitol** in den Rocky Mountains: Präsidentenpalast mit Säulengang, Goldkuppel und Rosengarten, Stadtkreis mit Springbrunnen, gläsernes Trainingscenter, Hauptbahnhof, Allee der Tribute und bunte Wolkenkratzer.
+- **Alle 13 Distrikte** mit typischen Bauwerken, z. B. Villen und Edelsteinatelier (D1), die „Nuss“ und der Steinbruch (D2), Elektronikwerke (D3), Hafen und Leuchtturm (D4), Staudamm und Kühlturm (D5), Rangierbahnhof (D6), Riesenfichtenwald und Sägewerk (D7), Webereien (D8), Weizenfelder, Silos und Windmühle (D9), Ranches mit Rindern (D10), Plantagen mit Zaun und Wachtürmen (D11), der Saum, das Dorf der Sieger und die Kohlemine (D12) sowie Ruinen mit einem geheimen, begehbaren Bunker (D13).
+- **Die Arenen** der 74. Spiele (Waldarena mit goldenem Füllhorn unter einer Kraftfeld-Kuppel) und der 75. Spiele (Ziffernblatt-Insel im Golf).
+- **Bahnnetz** vom Kapitol in alle Distrikte, mit Brücken, Tunneln und Bahnsteigen.
+
+## Bedienung
+
+- **Übersichtskarte:** Ziehen dreht, Rechtsklick bzw. zwei Finger verschieben, Mausrad zoomt. Klick auf ein Gebiet oder ein Namensschild zeigt Infos.
+- **Welt erkunden:** `W` `A` `S` `D` laufen, Maus umsehen, `Leertaste` springen, `F` oder doppelt `Leertaste` fliegen, `Strg` sprinten, Linksklick abbauen, Rechtsklick setzen, `1`–`9`/Mausrad Hotbar, `E` Inventar, `M` Karte & Teleport, `Esc` Menü.
+- **Touch:** virtueller Joystick links, rechts ziehen zum Umsehen, Knöpfe für Springen/Fliegen, Abbauen und Setzen.
+- Eigene Bauten werden lokal im Browser gespeichert (`localStorage`) und können im Spielmenü zurückgesetzt werden.
 
 ## Starten
 
-Es ist kein Build-Schritt und keine Installation nötig. Öffne `index.html` direkt im aktuellen Browser. Für lokale Entwicklung kann ein beliebiger statischer Webserver verwendet werden, beispielsweise:
+Öffne `index.html` über einen beliebigen statischen Webserver, zum Beispiel:
 
 ```bash
 python -m http.server 8000
 ```
 
-Öffne dann `http://localhost:8000`.
-
-## Enthalten
-
-- Interaktive schematische Panem-Karte mit Kapitol, 13 Distrikten und zwei Arena-Markern
-- Regionenauswahl mit editierbaren X/Z-Projektkoordinaten
-- 13 Distriktkarten mit Landschafts-, Industrie- und Wohnkonzepten
-- Konzepte der 74. und 75. Arena inklusive Funktionszonen
-- Bahn- und Straßen-Netzwerk, Routenplanung und Distanzberechnung aus den Projektkoordinaten
-- Bauwerkkatalog mit Region, Abmessungen, Status, Notiz und editierbaren Materialschätzungen
-- Materialrechner, Baufortschritt und Statusfilter
-- JSON-Export und -Import für Projekt-Backups bzw. Team-Austausch
-- Lokale Speicherung im Browser per `localStorage`
-
-## Bedienung
-
-1. Wähle ein Gebiet auf der Karte oder in den Distriktkarten.
-2. Passe die X/Z-Projektkoordinaten an. Streckendistanzen werden aus diesen Koordinaten berechnet.
-3. Aktualisiere den Bauzustand einzelner Bauwerke und Verbindungen.
-4. Lege eigene Gebäude und Verbindungen an. Materialien im Format `Material:Menge` eintragen, pro Zeile ein Material.
-5. Exportiere regelmäßig eine JSON-Sicherung und teile sie mit deinem Team.
+Dann `http://localhost:8000` öffnen. Benötigt wird ein Browser mit **WebGL 2** und Internetzugang (Three.js wird vom jsDelivr-CDN geladen, die Pixel-Schriften von Google Fonts). Die Welt wird beim Laden in wenigen Sekunden erzeugt.
 
 ## Projektstruktur
 
-- `index.html` – App-Struktur und Bereiche
-- `styles.css` – responsives dunkles UI
-- `app.js` – Regions-, Bauwerks-, Routen-, Material- und Speicherlogik
+- `index.html`, `mc.css` – Oberfläche im Blockspiel-Stil (Titelmenü, HUD, Hotbar, Karte, Panels)
+- `src/main.js` – Rendering mit Three.js, Übersichtskarte, Erkundungsmodus mit Physik, Bauen, Teleport, Minimap
+- `src/data.js` – Regionen von Panem, Koordinaten, Beschreibungen, Bahnlinien
+- `src/terrain.js` – Küstenumriss, Gebirge, Flüsse, Seen, Biome, Vegetation
+- `src/structures.js` – alle Bauwerke von Kapitol, Distrikten, Arenen und dem Bahnnetz
+- `src/mesher.js` – Greedy-Meshing mit Umgebungsverdeckung (AO) pro 32×32-Chunk
+- `src/textures.js`, `src/blocks.js` – prozedurale 16×16-Texturen und Blockdefinitionen
+- `planer.html`, `app.js`, `styles.css`, `world3d.js` – der frühere Bauplaner (Distrikte, Materialien, Verkehrsnetz) für ein echtes Minecraft-Survival-Projekt
 
-## Datenstatus / nächste Ausbaustufen
+## Maßstab
 
-Die 13 Distrikte, Arenen und Verkehrsverbindungen sind als **Planungsentwürfe** angelegt. Ein genauer Block-für-Block-Plan benötigt pro Bauwerk Grundrissraster, Höhenebenen, Blocklisten und Prüfschritte; das ist nicht für jedes Bauwerk bereits enthalten. Es gibt aktuell keine Cloud-Synchronisierung, Benutzerkonten, serverseitige Datenbank oder Live-Multiplayer-Funktionen.
+Ein echter 1:1-Nachbau eines Kontinents wäre mit Milliarden Blöcken nicht im Browser darstellbar. Die **Landschaft** ist daher auf etwa 7–8 km pro Block verkleinert, die **Städte und Bauwerke** sind dagegen im Blockmaßstab gebaut, damit man sie zu Fuß erkunden kann.
 
 ## Veröffentlichung mit GitHub Pages
 
-Ein Workflow unter `.github/workflows/pages.yml` veröffentlicht die statische App bei Änderungen an `main`. Einmalig in **Settings → Pages** als Build and deployment source **GitHub Actions** auswählen. Danach wird die Website nach erfolgreichen Workflow-Läufen aktualisiert. Du kannst den Workflow außerdem über **Actions → Deploy PanemCraft to GitHub Pages → Run workflow** manuell starten.
-
-
-## 3D-Voxel-Welt
-
-Die Kartenansicht startet mit einer dreh- und zoombaren 3D-Szene auf Basis von Three.js. Gelände wird prozedural aus blockigen Terrain-Säulen aufgebaut, ergänzt durch Wälder, einen Fluss, räumliche Gebäudemodelle, Arenen sowie Bahn- und Straßenrouten. Regionen und Bauwerke lassen sich anklicken; die schematische Karte bleibt über den Ansichtsumschalter verfügbar.
-
-Die 3D-Ansicht lädt Three.js und OrbitControls vom jsDelivr-CDN und benötigt Internetverbindung sowie WebGL im Browser. Es handelt sich um ein stilisiertes Voxel-Modell der Projektplanung, nicht um eine offizielle Panem-Karte oder einen Export einer echten Minecraft-Welt. Die Gebäude sind räumliche Voransichten und noch keine vollständigen Minecraft-Schematic-Dateien.
+Der Workflow `.github/workflows/pages.yml` veröffentlicht die Seite bei Änderungen an `main`. Einmalig unter **Settings → Pages** als Quelle **GitHub Actions** auswählen. Danach ist die Seite unter `https://<benutzer>.github.io/<repository>/` erreichbar.
