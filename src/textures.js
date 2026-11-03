@@ -73,6 +73,12 @@ function leaves(t, r, base, holes, extra) {
   }
   if (extra) extra();
 }
+function flower(t, r, petal, dark) {
+  for (let y = 0; y < 16; y++) for (let x = 0; x < 16; x++) t.set(x, y, [0, 0, 0], 0);
+  for (let y = 7; y < 16; y++) t.set(7, y, hex("#3f7f2a"));
+  t.set(6, 11, hex("#3f7f2a")); t.set(5, 10, hex("#3f7f2a")); t.set(8, 12, hex("#3f7f2a")); t.set(9, 11, hex("#3f7f2a"));
+  for (let y = 2; y < 7; y++) for (let x = 5; x < 10; x++) if (!((x === 5 || x === 9) && (y === 2 || y === 6))) t.set(x, y, (x + y) % 3 ? petal : dark);
+}
 function wool(t, r, base) {
   for (let y = 0; y < 16; y++) for (let x = 0; x < 16; x++) {
     const f = ((x + y) % 4 === 0 ? 0.9 : 1) * (0.95 + r() * 0.1);
@@ -211,6 +217,32 @@ const DRAW = {
     for (let y = 0; y < 16; y++) [1, 5, 9, 13].forEach(x => { t.set(x, y, hex("#a8a8a8")); t.set(x + 1, y, hex("#6f6f6f")); });
     for (let x = 0; x < 16; x++) { t.set(x, 0, hex("#9a9a9a")); t.set(x, 8, hex("#8a8a8a")); }
   },
+  smooth_quartz: (t, r) => { noiseFill(t, r, hex("#ebe5dc"), 0.02); for (let i = 0; i < 16; i++) { t.set(i, 0, hex("#f4efe8")); t.set(i, 15, hex("#d8d1c6")); } },
+  chiseled_quartz: (t, r) => {
+    noiseFill(t, r, hex("#ebe5dc"), 0.03);
+    for (let i = 1; i < 15; i++) { t.set(i, 1, hex("#cfc7bb")); t.set(i, 14, hex("#cfc7bb")); t.set(1, i, hex("#cfc7bb")); t.set(14, i, hex("#cfc7bb")); }
+    for (let i = 4; i < 12; i++) { t.set(i, 4, hex("#d9d2c7")); t.set(i, 11, hex("#d9d2c7")); t.set(4, i, hex("#d9d2c7")); t.set(11, i, hex("#d9d2c7")); }
+  },
+  smooth_stone: (t, r) => { noiseFill(t, r, hex("#9e9e9e"), 0.04); for (let i = 0; i < 16; i++) { t.set(i, 0, hex("#b5b5b5")); t.set(i, 15, hex("#7d7d7d")); t.set(0, i, hex("#a9a9a9")); t.set(15, i, hex("#858585")); } },
+  polished_andesite: (t, r) => { noiseFill(t, r, hex("#848786"), 0.08); for (let i = 0; i < 16; i++) { t.set(i, 0, hex("#9a9d9c")); t.set(0, i, hex("#959897")); t.set(i, 15, hex("#6b6e6d")); t.set(15, i, hex("#6f7271")); } },
+  sea_lantern: (t, r) => {
+    for (let y = 0; y < 16; y++) for (let x = 0; x < 16; x++) {
+      const edge = x < 2 || y < 2 || x > 13 || y > 13, inner = (x > 4 && x < 11 && y > 4 && y < 11);
+      t.set(x, y, edge ? sc(hex("#a9c8bf"), 0.9 + r() * 0.15) : inner ? hex("#f2fffb") : sc(hex("#d4ece6"), 0.95 + r() * 0.08));
+    }
+  },
+  c_light_gray: (t, r) => noiseFill(t, r, hex("#7d7d73"), 0.05),
+  c_red: (t, r) => noiseFill(t, r, hex("#8e2121"), 0.05),
+  c_blue: (t, r) => noiseFill(t, r, hex("#2d2f8f"), 0.05),
+  c_pink: (t, r) => noiseFill(t, r, hex("#d5658e"), 0.05),
+  c_green: (t, r) => noiseFill(t, r, hex("#495b24"), 0.05),
+  c_brown: (t, r) => noiseFill(t, r, hex("#603b1f"), 0.05),
+  white_tulip: (t, r) => flower(t, r, hex("#f4f4f0"), hex("#d7dccf")),
+  poppy: (t, r) => flower(t, r, hex("#d42a1c"), hex("#8f150d")),
+  target_side: (t, r) => {
+    for (let y = 0; y < 16; y++) for (let x = 0; x < 16; x++) { const d = Math.max(Math.abs(x - 7.5), Math.abs(y - 7.5)); t.set(x, y, Math.floor(d) % 4 < 2 ? hex("#e3d3c5") : hex("#c63a2b")); }
+  },
+  target_top: (t, r) => DRAW.target_side(t, r),
   apple_leaves: (t, r) => leaves(t, r, hex("#3f7f2a"), 0.18, () => {
     for (let i = 0; i < 4; i++) { const x = 1 + Math.floor(r() * 13), y = 1 + Math.floor(r() * 13); t.set(x, y, hex("#c8221d")); t.set(x + 1, y, hex("#d93a2b")); t.set(x, y + 1, hex("#9e1915")); t.set(x + 1, y + 1, hex("#c8221d")); }
   })

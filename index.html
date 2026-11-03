@@ -2,14 +2,14 @@
 <html lang="de">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#2b2b2b">
-  <meta name="description" content="PanemCraft – ganz Panem aus Minecraft-artigen Blöcken: Kapitol, 13 Distrikte, Arenen und Bahnnetz als begehbare 3D-Blockwelt im Browser.">
-  <title>PanemCraft – Panem aus Blöcken</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#16181a">
+  <meta name="description" content="PanemCraft – Bauanleitung für Panem in Minecraft Java im Maßstab 1:1: Bauteile, Schichtpläne, Materiallisten, Koordinaten und .schem-Export.">
+  <title>PanemCraft – Bauanleitung 1:1</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="mc.css">
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="bau.css">
   <script type="importmap">
     {
       "imports": {
@@ -19,164 +19,140 @@
     }
   </script>
 </head>
-<body class="mode-loading">
-  <canvas id="game" aria-label="3D-Blockwelt von Panem"></canvas>
-  <div id="labels" aria-hidden="true"></div>
+<body>
+  <header class="top">
+    <a class="brand" href="#lageplan"><span class="logo">PANEM<b>CRAFT</b></span><span class="sub">Bauanleitung · Maßstab 1:1 · Minecraft Java</span></a>
+    <nav><span class="region">Gebiet: <b>Das Kapitol</b></span><a href="planer.html">Projektplaner</a><button id="helpBtn" class="btn ghost">Hilfe</button></nav>
+  </header>
 
-  <!-- Ladebildschirm -->
-  <section id="loading" class="screen dirt">
-    <div class="loading-box">
-      <h1 class="logo small">PANEM<span>CRAFT</span></h1>
-      <p id="loadingText" class="mc-text">Welt wird generiert …</p>
-      <div class="mc-progress"><div id="loadingBar"></div></div>
-      <p id="loadingHint" class="mc-text muted">Tipp: Im Erkundungsmodus kannst du Blöcke abbauen und setzen.</p>
-    </div>
-    <p id="loadingError" class="mc-text error" hidden></p>
-  </section>
-
-  <!-- Titelmenü -->
-  <section id="title" class="screen" hidden>
-    <div class="title-inner">
-      <h1 class="logo">PANEM<span>CRAFT</span></h1>
-      <div class="splash" id="splash">Block für Block!</div>
-      <p class="mc-text title-sub">Ganz Panem – das Kapitol, alle 13 Distrikte und zwei Arenen – nachgebaut aus <b>4 Millionen Blöcken</b>.</p>
-      <div class="menu-buttons">
-        <button class="mc-btn wide" data-action="explore">⛏ Welt erkunden</button>
-        <button class="mc-btn wide" data-action="overview">🗺 Übersichtskarte</button>
-        <div class="btn-row">
-          <button class="mc-btn" data-action="districts">Distrikte &amp; Teleport</button>
-          <button class="mc-btn" data-action="help">Steuerung</button>
+  <div class="app">
+    <aside class="side">
+      <section class="card origin">
+        <h2>Ursprung in deiner Welt</h2>
+        <p class="hint">Koordinaten der <b>Mitte des Stadtkreises</b> auf der Geländeoberfläche (F3 in Minecraft). Alle Koordinaten auf der Seite werden daraus berechnet.</p>
+        <div class="xyz">
+          <label>X <input id="ox" type="number" value="0"></label>
+          <label>Y <input id="oy" type="number" value="64"></label>
+          <label>Z <input id="oz" type="number" value="0"></label>
         </div>
-        <div class="btn-row">
-          <a class="mc-btn" href="planer.html">Bauplaner</a>
-          <button class="mc-btn" data-action="about">Über das Projekt</button>
-        </div>
-      </div>
-    </div>
-    <footer class="title-foot mc-text">Fan-Projekt · nicht offiziell mit „Die Tribute von Panem“ oder Minecraft verbunden · Alle Texturen selbst generiert</footer>
-  </section>
-
-  <!-- HUD Übersicht -->
-  <section id="overviewHud" class="hud" hidden>
-    <div class="topbar">
-      <button class="mc-btn sm" data-action="title">☰ Menü</button>
-      <button class="mc-btn sm" data-action="districts">Distrikte</button>
-      <button class="mc-btn sm" data-action="explore">⛏ Erkunden</button>
-      <button class="mc-btn sm" data-action="labels" id="labelsBtn">Namen: an</button>
-      <button class="mc-btn sm" data-action="home">⌂ Ganz Panem</button>
-    </div>
-    <div class="hint mc-text" id="overviewHint">Ziehen = drehen · Rechtsklick/zwei Finger = verschieben · Mausrad = zoomen · Klick auf einen Distrikt = Infos</div>
-    <aside id="infoCard" class="panel info-card" hidden>
-      <button class="close" data-action="closeInfo" aria-label="Schließen">✕</button>
-      <div class="info-head"><canvas id="infoIcon" width="48" height="48"></canvas><div><h2 id="infoName"></h2><p id="infoIndustry" class="mc-text yellow"></p></div></div>
-      <p id="infoDesc" class="mc-text"></p>
-      <ul id="infoLandmarks" class="mc-text"></ul>
-      <p id="infoInspo" class="mc-text muted"></p>
-      <div class="btn-row">
-        <button class="mc-btn" data-action="flyHere">Hinfliegen</button>
-        <button class="mc-btn" data-action="spawnHere">Dort spawnen</button>
-      </div>
+      </section>
+      <nav class="card list" id="buildingList" aria-label="Gebäude"></nav>
+      <p class="disclaimer">Inoffizielles Fan-Projekt. Es gibt keine offiziellen Baupläne von Panem – Maße und Aufbau sind eine Nachbildung in realer Größe (1 Block = 1 m) nach Buch- und Filmbeschreibungen.</p>
     </aside>
-  </section>
 
-  <!-- HUD Erkunden -->
-  <section id="exploreHud" class="hud" hidden>
-    <div class="crosshair"></div>
-    <div class="debug mc-text" id="debug"></div>
-    <div class="region-toast mc-text" id="regionToast"></div>
-    <canvas id="minimap" class="minimap" width="200" height="120"></canvas>
-    <div class="hotbar" id="hotbar"></div>
-    <div class="block-name mc-text" id="blockName"></div>
-    <div class="touch" id="touch" hidden>
-      <div class="stick" id="stick"><div class="knob" id="knob"></div></div>
-      <div class="touch-btns">
-        <button data-touch="menu">☰</button>
-        <button data-touch="fly">✈</button>
-        <button data-touch="up">▲</button>
-        <button data-touch="down">▼</button>
-        <button data-touch="break">⛏</button>
-        <button data-touch="place">■</button>
-      </div>
-    </div>
-    <div class="click-to-play mc-text" id="clickToPlay" hidden>Klicke, um zu spielen</div>
-  </section>
-
-  <!-- Pausenmenü -->
-  <section id="pause" class="screen dim" hidden>
-    <div class="menu-buttons">
-      <h2 class="mc-title">Spielmenü</h2>
-      <button class="mc-btn wide" data-action="resume">Zurück zum Spiel</button>
-      <button class="mc-btn wide" data-action="districts">Teleportieren</button>
-      <div class="btn-row">
-        <button class="mc-btn" data-action="overview">Übersichtskarte</button>
-        <button class="mc-btn" data-action="help">Steuerung</button>
-      </div>
-      <div class="btn-row">
-        <button class="mc-btn" data-action="resetEdits">Bauten zurücksetzen</button>
-        <button class="mc-btn" data-action="title">Hauptmenü</button>
-      </div>
-    </div>
-  </section>
-
-  <!-- Distrikte / Teleport -->
-  <section id="districts" class="screen dim" hidden>
-    <div class="panel big-panel">
-      <button class="close" data-action="back" aria-label="Schließen">✕</button>
-      <h2 class="mc-title">Panem – Distrikte &amp; Teleport</h2>
-      <div class="district-layout">
-        <div class="map-wrap">
-          <canvas id="bigmap" width="768" height="416"></canvas>
-          <p class="mc-text muted">Klicke auf die Karte, um an diese Stelle zu reisen.</p>
+    <main class="main">
+      <!-- Lageplan -->
+      <section id="siteView" hidden>
+        <div class="head">
+          <div>
+            <p class="eyebrow">Lageplan</p>
+            <h1>Das Kapitol – Übersicht</h1>
+            <p class="desc">Alle Gebäude mit ihrer Lage in deiner Welt. Norden ist oben (−Z). Klicke auf ein Gebäude, um seinen Bauplan zu öffnen.</p>
+          </div>
         </div>
-        <div class="district-list" id="districtList"></div>
-      </div>
-    </div>
-  </section>
+        <div class="card site-map"><canvas id="siteCanvas"></canvas></div>
+        <div class="card table-wrap">
+          <table class="tbl">
+            <thead><tr><th>Gebäude</th><th>Maße (B × H × T)</th><th>Blöcke</th><th>Nordwest-Ecke unten</th><th>Südost-Ecke oben</th><th></th></tr></thead>
+            <tbody id="siteTable"></tbody>
+          </table>
+        </div>
+        <div class="card steps">
+          <h2>Empfohlene Reihenfolge</h2>
+          <ol>
+            <li><b>Ursprung festlegen:</b> Stelle dich auf die geplante Mitte des Stadtkreises und trage die Koordinaten links ein.</li>
+            <li><b>Gelände vorbereiten:</b> Ebne die Flächen der Gebäude auf die Höhe Y des Ursprungs ein (Trainingscenter: Baugrube 11 Blöcke tief).</li>
+            <li><b>Stadtkreis</b> zuerst legen – er bestimmt die Achsen für alle anderen Gebäude.</li>
+            <li>Dann <b>Palast</b>, <b>Rosengarten</b>, <b>Trainingscenter</b>, <b>Bahnhof</b> und zuletzt die <b>Wohntürme</b>.</li>
+            <li>Jedes Gebäude Bauteil für Bauteil und Schicht für Schicht bauen. Erledigte Schichten abhaken.</li>
+          </ol>
+        </div>
+      </section>
 
-  <!-- Inventar -->
-  <section id="inventory" class="screen dim" hidden>
-    <div class="panel inv-panel">
-      <button class="close" data-action="back" aria-label="Schließen">✕</button>
-      <h2 class="mc-title">Blöcke</h2>
-      <p class="mc-text muted">Wähle einen Block für den aktuellen Hotbar-Platz.</p>
-      <div class="inv-grid" id="invGrid"></div>
-    </div>
-  </section>
+      <!-- Gebäude -->
+      <section id="buildingView" hidden>
+        <div class="head">
+          <div>
+            <p class="eyebrow" id="bEyebrow">Gebäude</p>
+            <h1 id="bName"></h1>
+            <p class="desc" id="bDesc"></p>
+          </div>
+          <div class="exports">
+            <button class="btn primary" id="exportAll">⬇ .schem (ganzes Gebäude)</button>
+            <button class="btn" id="exportVisible">⬇ .schem (nur sichtbare Bauteile)</button>
+          </div>
+        </div>
+        <div class="facts" id="bFacts"></div>
 
-  <!-- Hilfe -->
-  <section id="help" class="screen dim" hidden>
-    <div class="panel text-panel">
-      <button class="close" data-action="back" aria-label="Schließen">✕</button>
-      <h2 class="mc-title">Steuerung</h2>
-      <div class="keys mc-text">
-        <h3>Erkunden (Maus &amp; Tastatur)</h3>
-        <p><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> laufen · <kbd>Maus</kbd> umsehen · <kbd>Leertaste</kbd> springen</p>
-        <p><kbd>F</kbd> oder doppelt <kbd>Leertaste</kbd> Fliegen an/aus · im Flug <kbd>Leertaste</kbd>/<kbd>Shift</kbd> hoch/runter</p>
-        <p><kbd>Strg</kbd> sprinten (im Flug sehr schnell) · <kbd>Linksklick</kbd> Block abbauen · <kbd>Rechtsklick</kbd> Block setzen</p>
-        <p><kbd>1</kbd>–<kbd>9</kbd> / <kbd>Mausrad</kbd> Hotbar · <kbd>Mittelklick</kbd> Block aufnehmen · <kbd>E</kbd> Inventar</p>
-        <p><kbd>M</kbd> Karte &amp; Teleport · <kbd>Esc</kbd> Spielmenü</p>
-        <h3>Übersichtskarte</h3>
-        <p>Ziehen dreht, Rechtsklick/Shift-Ziehen verschiebt, Mausrad zoomt. Klicke auf Gebiete oder Namensschilder für Infos.</p>
-        <h3>Touch</h3>
-        <p>Links ziehen = laufen, rechts ziehen = umsehen. Knöpfe für Springen/Fliegen, Abbauen und Setzen.</p>
-        <p class="muted">Deine Bauten werden lokal im Browser gespeichert.</p>
-      </div>
-    </div>
-  </section>
+        <div class="views">
+          <div class="card pane pane3d">
+            <div class="pane-head">
+              <h2>3D-Ansicht</h2>
+              <label class="inline"><input type="checkbox" id="cutToggle"> nur bis zur aktuellen Schicht</label>
+              <label class="inline range">Explosion <input type="range" id="explode" min="0" max="100" value="0"></label>
+              <button class="btn small" id="resetCam">Ansicht zurücksetzen</button>
+            </div>
+            <div class="canvas-box"><canvas id="view3d"></canvas><span class="compass">N ↑ = −Z</span></div>
+          </div>
 
-  <!-- Über -->
-  <section id="about" class="screen dim" hidden>
-    <div class="panel text-panel">
-      <button class="close" data-action="back" aria-label="Schließen">✕</button>
-      <h2 class="mc-title">Über PanemCraft</h2>
-      <div class="mc-text about">
-        <p>PanemCraft baut das Land Panem als zusammenhängende Blockwelt nach: <b>768 × 416 Blöcke</b> Grundfläche, bis zu 128 Blöcke hoch. Die Geografie folgt der verbreiteten Fan-Karte auf Basis Nordamerikas nach dem Anstieg des Meeresspiegels – mit Rocky Mountains, Appalachen, Großen Seen, Flüssen und Küsten.</p>
-        <p>Maßstab: Die Landschaft entspricht etwa 7–8 km pro Block. Städte und Bauwerke sind dagegen im Blockmaßstab gebaut, damit man sie zu Fuß erkunden kann.</p>
-        <p>Enthalten: das Kapitol mit Palast, Stadtkreis, Trainingscenter und Hauptbahnhof · alle 13 Distrikte mit typischen Bauwerken · die Arenen der 74. und 75. Spiele · ein Bahnnetz mit Brücken und Tunneln.</p>
-        <p class="muted">Inoffizielles Fan-Projekt. Nicht verbunden mit Suzanne Collins, Lionsgate, Mojang oder Microsoft. Keine Original-Texturen: alle Blockgrafiken werden beim Laden prozedural erzeugt.</p>
-      </div>
+          <div class="card pane panelayer">
+            <div class="pane-head">
+              <h2>Schichtplan</h2>
+              <div class="layer-nav">
+                <button class="btn small" id="layerDown" title="Schicht tiefer">▼</button>
+                <span id="layerLabel" class="mono"></span>
+                <button class="btn small" id="layerUp" title="Schicht höher">▲</button>
+              </div>
+              <label class="inline"><input type="checkbox" id="layerDone"> Schicht gebaut</label>
+            </div>
+            <input type="range" id="layerSlider" min="0" max="10" value="0" class="layer-slider" aria-label="Schicht">
+            <div class="layer-progress"><div id="layerProgressBar"></div><span id="layerProgressText"></span></div>
+            <div class="grid-scroll" id="gridScroll"><canvas id="layerCanvas"></canvas></div>
+            <div class="grid-foot">
+              <span id="cellInfo" class="mono">Fahre über ein Feld für Koordinaten und Block.</span>
+              <label class="inline range">Zoom <input type="range" id="zoom" min="4" max="28" value="12"></label>
+            </div>
+          </div>
+        </div>
+
+        <div class="lower">
+          <div class="card parts">
+            <div class="pane-head"><h2>Bauteile <small>(in Bau-Reihenfolge)</small></h2>
+              <button class="btn small" id="allParts">Alle zeigen</button></div>
+            <ol id="partList"></ol>
+          </div>
+          <div class="card materials">
+            <div class="pane-head"><h2>Materialliste</h2>
+              <select id="matScope" aria-label="Umfang der Materialliste">
+                <option value="all">Ganzes Gebäude</option>
+                <option value="visible">Nur sichtbare Bauteile</option>
+                <option value="layer">Nur aktuelle Schicht</option>
+                <option value="remaining">Noch nicht gebaute Schichten</option>
+              </select></div>
+            <div class="table-wrap"><table class="tbl mat">
+              <thead><tr><th>Block</th><th>Java-ID</th><th class="num">Anzahl</th><th class="num">Stacks à 64</th><th class="num">Shulker</th></tr></thead>
+              <tbody id="matTable"></tbody>
+            </table></div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <dialog id="help">
+    <div class="dlg">
+      <h2>So benutzt du die Bauanleitung</h2>
+      <ol>
+        <li><b>Ursprung:</b> Trage links die Koordinaten der Stelle ein, an der die Mitte des Stadtkreises liegen soll (Y = Geländeoberfläche). Alle angezeigten Koordinaten sind dann echte Weltkoordinaten.</li>
+        <li><b>Bauteile:</b> Jedes Gebäude ist in Teile zerlegt (Sockel, Wände, Decken, Fenster, Dach …). Blende Teile ein und aus oder nutze die Explosionsansicht, um zu sehen, wie sie zusammengehören.</li>
+        <li><b>Schichtplan:</b> Zeigt eine Y-Ebene von oben. Norden ist oben. Blass dargestellt ist die Schicht darunter. Fahre über ein Feld, um die genaue Koordinate und den Block zu sehen. Pfeiltasten ↑/↓ wechseln die Schicht.</li>
+        <li><b>Materialliste:</b> Für das ganze Gebäude, sichtbare Teile, die aktuelle Schicht oder alles noch nicht Gebaute – mit Stacks und Shulkerkisten.</li>
+        <li><b>.schem-Export:</b> Für <b>WorldEdit</b> (Datei nach <code>plugins/WorldEdit/schematics</code> bzw. <code>config/worldedit/schematics</code>, dann <code>//schem load name</code> und <code>//paste</code>) oder <b>Litematica</b> (neuere Versionen lesen .schem: Datei in den Ordner <code>schematics</code> legen und als Hologramm platzieren). Der Nullpunkt der Datei ist die Nordwest-Ecke unten.</li>
+      </ol>
+      <p class="hint">Fortschritt und Ursprung werden in deinem Browser gespeichert.</p>
+      <form method="dialog"><button class="btn primary">Verstanden</button></form>
     </div>
-  </section>
+  </dialog>
 
   <script type="module" src="src/main.js"></script>
 </body>
