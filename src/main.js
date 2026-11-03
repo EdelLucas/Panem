@@ -342,7 +342,7 @@ function openSky(x, t, z) {
   return true;
 }
 // Spawnpunkt: am Südrand der Region mit Blick auf das Zentrum
-const SPAWN_OFFSET = { capitol: [0, 21], d2: [-12, 16], d4: [-9, 3], d5: [14, 4], d7: [0, 6], d9: [-14, 14], d3: [10, 12], d8: [8, 6], d12: [-2, 10], d13: [2, 20], arena74: [3, 4], arena75: [0, 26] };
+const SPAWN_OFFSET = { capitol: [0, 21], d2: [-12, 16], d4: [-9, 3], d5: [14, 4], d7: [0, 6], d9: [-14, 14], d3: [10, 12], d8: [20, -1], d12: [-2, 10], d13: [2, 20], arena74: [3, 4], arena75: [0, 26] };
 function findSpawn(reg) {
   const [ox, oz] = SPAWN_OFFSET[reg.id] || [0, Math.round(reg.r * 0.55)];
   const sx = reg.x + ox, sz = reg.z + oz;
